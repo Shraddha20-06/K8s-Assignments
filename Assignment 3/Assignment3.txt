@@ -1,0 +1,69 @@
+==============================================================================================================================
+Create context for namespaces, deploy pod in each context and see if you can see pods from each context - Done
+==========================================================================================================================
+[node1 ~]$ kubectl apply -f test.yaml
+service/my-nginx-svc created
+deployment.apps/my-nginx created
+namespace/demo created
+
+==============================================================================================================================
+Deploy all workloads in your cluster and captures log for each control plane component and kubelet, share the yaml and logs in github repo - Done
+==============================================================================================================================
+Control plane component logs :
+[node1 log]$ tail -n 10 /var/log/containers/kube-controller-manager-node1_kube-system_kube-controller-manager-a27972fd34a2c3802c1ff03d6f559b6041dfd1d3148bc38184b7a36c94920d33.log
+{"log":"I0420 17:06:39.764565       1 event.go:209] Event(v1.ObjectReference{Kind:\"ReplicaSet\", Namespace:\"default\", Name:\"my-nginx-756d9fd5f9\", UID:\"4d067c5c-8329-11ea-866e-0242c469d802\", APIVersion:\"apps/v1\", ResourceVersion:\"1555\", FieldPath:\"\"}): type: 'Normal'reason: 'SuccessfulCreate' Created pod: my-nginx-756d9fd5f9-x5ctg\n","stream":"stderr","time":"2020-04-20T17:06:39.764734267Z"}
+{"log":"I0420 17:06:39.770392       1 event.go:209] Event(v1.ObjectReference{Kind:\"ReplicaSet\", Namespace:\"default\", Name:\"my-nginx-756d9fd5f9\", UID:\"4d067c5c-8329-11ea-866e-0242c469d802\", APIVersion:\"apps/v1\", ResourceVersion:\"1555\", FieldPath:\"\"}): type: 'Normal'reason: 'SuccessfulCreate' Created pod: my-nginx-756d9fd5f9-ht82r\n","stream":"stderr","time":"2020-04-20T17:06:39.770502109Z"}
+{"log":"W0420 17:13:15.830980       1 reflector.go:289] k8s.io/client-go/informers/factory.go:133: watch of *v1beta1.Event ended with: The resourceVersion for the provided watch is too old.\n","stream":"stderr","time":"2020-04-20T17:13:15.831126147Z"}{"log":"W0420 17:26:19.893503       1 reflector.go:289] k8s.io/client-go/informers/factory.go:133: watch of *v1beta1.Event ended with: The resourceVersion for the provided watch is too old.\n","stream":"stderr","time":"2020-04-20T17:26:19.8937953Z"}{"log":"W0420 17:39:02.907029       1 reflector.go:289] k8s.io/client-go/informers/factory.go:133: watch of *v1beta1.Event ended with: The resourceVersion for the provided watch is too old.\n","stream":"stderr","time":"2020-04-20T17:39:02.907173891Z"}
+{"log":"I0420 17:50:28.986877       1 leaderelection.go:263] failed to renew lease kube-system/kube-controller-manager: failed to tryAcquireOrRenew context deadline exceeded\n","stream":"stderr","time":"2020-04-20T17:50:28.987427076Z"}{"log":"F0420 17:50:28.986975       1 controllermanager.go:260] leaderelection lost\n","stream":"stderr","time":"2020-04-20T17:50:28.987447576Z"}{"log":"I0420 17:50:28.996530       1 ttl_controller.go:128] Shutting down TTL controller\n","stream":"stderr","time":"2020-04-20T17:50:29.010637639Z"}{"log":"I0420 17:50:28.996576       1 daemon_controller.go:281] Shutting down daemon sets controller\n","stream":"stderr","time":"2020-04-20T17:50:29.050833328Z"}{"log":"I0420 17:50:28.996593       1 replica_set.go:194] Shutting down replicaset controller\n","stream":"stderr","time":"2020-04-20T17:50:29.050851228Z"}
+
+Kubelet logs :
+
+I0420 17:47:23.730406   32687 server.go:418] Version: v1.14.9
+I0420 17:47:23.731331   32687 plugins.go:103] No cloud provider specified.
+W0420 17:47:23.731371   32687 server.go:557] standalone mode, no API client
+W0420 17:47:23.813737   32687 server.go:475] No api server defined - no events will be sent to API server.
+I0420 17:47:23.813802   32687 server.go:629] --cgroups-per-qos enabled, but --cgroup-root was not specified.  defaulting to /
+I0420 17:47:23.814312   32687 container_manager_linux.go:261] container manager verified user specified cgroup-root exists: []
+I0420 17:47:23.814350   32687 container_manager_linux.go:266] Creating Container Manager object based on Node Config: {RuntimeCgroupsName: SystemCgroupsName: KubeletCgroupsName: ContainerRuntime:docker CgroupsPerQOS:true CgroupRoot:/ CgroupDriver:cgroupfs KubeletRootDir:/var/lib/kubelet ProtectKernelDefaults:false NodeAllocatableConfig:{KubeReservedCgroupName: SystemReservedCgroupName: EnforceNodeAllocatable:map[pods:{}] KubeReserved:map[] SystemReserved:map[] HardEvictionThresholds:[{Signal:nodefs.inodesFree Operator:LessThan Value:{Quantity:<nil> Percentage:0.05} GracePeriod:0s MinReclaim:<nil>} {Signal:imagefs.available Operator:LessThan Value:{Quantity:<nil> Percentage:0.15} GracePeriod:0s MinReclaim:<nil>} {Signal:memory.available Operator:LessThan Value:{Quantity:100Mi Percentage:0} GracePeriod:0s MinReclaim:<nil>} {Signal:nodefs.available Operator:LessThan Value:{Quantity:<nil> Percentage:0.1} GracePeriod:0s MinReclaim:<nil>}]} QOSReserved:map[] ExperimentalCPUManagerPolicy:none ExperimentalCPUManagerReconcilePeriod:10s ExperimentalPodPidsLimit:-1 EnforceCPULimits:true CPUCFSQuotaPeriod:100ms}
+I0420 17:47:23.814494   32687 container_manager_linux.go:286] Creating device plugin manager: true
+I0420 17:47:23.814558   32687 state_mem.go:36] [cpumanager] initializing new in-memory state store
+I0420 17:47:23.815626   32687 state_mem.go:84] [cpumanager] updated default cpuset: ""
+I0420 17:47:23.815658   32687 state_mem.go:92] [cpumanager] updated cpuset assignments: "map[]"
+I0420 17:47:23.818524   32687 client.go:75] Connecting to docker on unix:///var/run/docker.sock
+I0420 17:47:23.818558   32687 client.go:104] Start docker client with request timeout=2m0s
+W0420 17:47:23.839391   32687 docker_service.go:561] Hairpin mode set to "promiscuous-bridge" but kubenet is not enabled, falling back to "hairpin-veth"
+I0420 17:47:23.839459   32687 docker_service.go:238] Hairpin mode set to "hairpin-veth"
+W0420 17:47:23.844058   32687 plugins.go:186] can't set sysctl net/bridge/bridge-nf-call-iptables: open /proc/sys/net/bridge/bridge-nf-call-iptables: no such file or directory
+I0420 17:47:23.844380   32687 docker_service.go:253] Docker cri networking managed by kubernetes.io/no-op
+I0420 17:47:23.860693   32687 docker_service.go:258] Docker Info: &{ID:VPXY:TBSE:U4WO:BCQX:T7HO:37VX:D4OP:KW6H:VJVE:JXU7:AEHZ:J2WB Containers:12 ContainersRunning:11 ContainersPaused:0 ContainersStopped:1 Images:5 Driver:vfs DriverStatus:[] SystemStatus:[] Plugins:{Volume:[local] Network:[bridge host ipvlan macvlan null overlay] Authorization:[] Log:[awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog]} MemoryLimit:true SwapLimit:false KernelMemory:true CPUCfsPeriod:true CPUCfsQuota:true CPUShares:true CPUSet:true IPv4Forwarding:true BridgeNfIptables:false BridgeNfIP6tables:false Debug:true NFd:86 OomKillDisable:true NGoroutines:91 SystemTime:2020-04-20T17:47:23.846302083Z LoggingDriver:json-file CgroupDriver:cgroupfs NEventsListener:0 KernelVersion:4.4.0-176-generic OperatingSystem:CentOS Linux 7 (Core) (containerized) OSType:linux Architecture:x86_64 IndexServerAddress:https://index.docker.io/v1/ RegistryConfig:0xc00028b570 NCPU:8 MemTotal:33720324096 GenericResources:[] DockerRootDir:/var/lib/docker HTTPProxy: HTTPSProxy: NoProxy: Name:node2 Labels:[] ExperimentalBuild:true ServerVersion:19.03.5 ClusterStore: ClusterAdvertise: Runtimes:map[runc:{Path:runc Args:[]}] DefaultRuntime:runc Swarm:{NodeID: NodeAddr: LocalNodeState:inactive ControlAvailable:false Error: RemoteManagers:[] Nodes:0 Managers:0 Cluster:<nil>} LiveRestoreEnabled:false Isolation: InitBinary:docker-init ContainerdCommit:{ID:b34a5c8af56e510852c35414db4c1f4fa6172339 Expected:b34a5c8af56e510852c35414db4c1f4fa6172339} RuncCommit:{ID:3e425f80a8c931f88e6d94a8c831b9d5aa481657 Expected:3e425f80a8c931f88e6d94a8c831b9d5aa481657} InitCommit:{ID:fec3683 Expected:fec3683} SecurityOptions:[name=seccomp,profile=default]}
+I0420 17:47:23.860816   32687 docker_service.go:271] Setting cgroupDriver to cgroupfs
+I0420 17:47:23.881631   32687 remote_runtime.go:62] parsed scheme: ""
+I0420 17:47:23.882183   32687 remote_runtime.go:62] scheme "" not registered, fallback to default scheme
+I0420 17:47:23.882960   32687 remote_image.go:50] parsed scheme: ""
+I0420 17:47:23.884022   32687 remote_image.go:50] scheme "" not registered, fallback to default scheme
+I0420 17:47:23.884532   32687 asm_amd64.s:1337] ccResolverWrapper: sending new addresses to cc: [{/var/run/dockershim.sock 0  <nil>}]
+I0420 17:47:23.884583   32687 clientconn.go:796] ClientConn switching balancer to "pick_first"
+I0420 17:47:23.885349   32687 balancer_conn_wrappers.go:131] pickfirstBalancer: HandleSubConnStateChange: 0xc00024d270, CONNECTING
+I0420 17:47:23.885845   32687 balancer_conn_wrappers.go:131] pickfirstBalancer: HandleSubConnStateChange: 0xc00024d270, READY
+I0420 17:47:23.885881   32687 asm_amd64.s:1337] ccResolverWrapper: sending new addresses to cc: [{/var/run/dockershim.sock 0  <nil>}]
+I0420 17:47:23.885898   32687 clientconn.go:796] ClientConn switching balancer to "pick_first"
+I0420 17:47:23.885951   32687 balancer_conn_wrappers.go:131] pickfirstBalancer: HandleSubConnStateChange: 0xc00024d440, CONNECTING
+I0420 17:47:23.886126   32687 balancer_conn_wrappers.go:131] pickfirstBalancer: HandleSubConnStateChange: 0xc00024d440, READY
+E0420 17:47:23.887443   32687 aws_credentials.go:77] while getting AWS credentials NoCredentialProviders: no valid providers in chain. Deprecated.
+        For verbose messaging see aws.Config.CredentialsChainVerboseErrors
+I0420 17:47:23.899535   32687 kuberuntime_manager.go:210] Container runtime docker initialized, version: 19.03.5, apiVersion: 1.40.0
+W0420 17:47:23.899651   32687 volume_host.go:77] kubeClient is nil. Skip initialization of CSIDriverLister
+W0420 17:47:23.900389   32687 csi_plugin.go:215] kubernetes.io/csi: kubeclient not set, assuming standalone kubelet
+I0420 17:47:23.912477   32687 server.go:1055] Started kubelet
+E0420 17:47:23.912503   32687 kubelet.go:1282] Image garbage collection failed once. Stats initialization may not have completed yet: failed to get imageFs info: unable to find data in memory cache
+W0420 17:47:23.912553   32687 kubelet.go:1387] No api server defined - no node status update will be sent.
+E0420 17:47:23.912985   32687 server.go:716] Starting health server failed: listen tcp 127.0.0.1:10248: bind: address already in use
+I0420 17:47:23.913234   32687 server.go:141] Starting to listen on 0.0.0.0:10250
+I0420 17:47:23.915084   32687 fs_resource_analyzer.go:64] Starting FS ResourceAnalyzer
+I0420 17:47:23.917729   32687 status_manager.go:148] Kubernetes client is nil, not starting status manager.
+I0420 17:47:23.918510   32687 kubelet.go:1808] Starting kubelet main sync loop.
+I0420 17:47:23.918074   32687 volume_manager.go:248] Starting Kubelet Volume Manager
+I0420 17:47:23.918688   32687 desired_state_of_world_populator.go:130] Desired state populator starts to run
+I0420 17:47:23.918594   32687 kubelet.go:1825] skipping pod synchronization - [container runtime status check may not have completed yet., PLEG is not healthy: pleg has yet to be successful.]
+F0420 17:47:23.920316   32687 server.go:169] listen tcp 0.0.0.0:10255: bind: address already in use
+
