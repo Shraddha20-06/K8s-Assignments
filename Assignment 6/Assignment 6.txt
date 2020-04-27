@@ -1,0 +1,5 @@
+Create a service account, cluster role with user privilege to only get pods - Done
+Create a cluster role binding for binding the service account and cluster role. - Done
+Try creating the pod with this new service account - Could not create pod due to local setup issues.
+Create a configMap with few env variables and use those inside a container - Understood configmap creation with env variablesSave
+Save logs for the same - Could not create pod due to local setup issues.
