@@ -1,0 +1,7 @@
+Create services without selector  and create endpoints later. And try to access endpoints using service. -> Done basic handson
+
+Why Kubernetes relies on proxying to forward inbound traffic to backends ? -> The Kubernetes network proxy runs on each node. This reflects services as defined in the Kubernetes API on each node and can do simple TCP, UDP, and SCTP stream forwarding or round robin TCP, UDP, and SCTP forwarding across a set of backends. Service cluster IPs and ports are currently found through Docker-links-compatible environment variables specifying ports opened by the service proxy. There is an optional addon that provides cluster DNS for these cluster IPs. The user must create a service with the apiserver API to configure the proxy. Kubernetes Pods are mortal. They are born and when they die, they are not resurrected. ReplicationControllers in particular create and destroy Pods dynamically (e.g. when scaling up or down or when doing rolling updates). While each Pod gets its own IP address, even those IP addresses cannot be relied upon to be stable over time. This leads to a problem: if some set of Pods (let's call them backends) provides functionality to other Pods 
+
+Try both ways of service discovery i.e. Env Variable and DNS -> Done basic handson
+
+Hands-on on all type of services. -> Done basic handson
